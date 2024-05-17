@@ -1,0 +1,339 @@
+# Based on
+# https://github.com/actions/starter-workflows/blob/main/ci/python-package.yml
+# https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# https://docs.github.com/en/actions/learn-github-actions/migrating-from-travis-ci-to-github-actions
+
+name: CI
+
+env:
+# Update this version to force-expire the pip cache
+  pip-cache-version: 1
+# Update this version to force-expire the CDF library cache
+# (but see also the CDF library version on the cache config)
+  cdf-cache-version: 1
+
+on:
+  schedule:
+    - cron: '37 7 * * *'
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
+  # Required for manual triggering
+  workflow_dispatch:
+
+jobs:
+  test:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.6"
+            os: ubuntu-20.04
+            build-deps: "pip~=20.0.0 setuptools~=44.1.0 wheel~=0.34.2 cython<3.0"
+            numpy-version: "~=1.15.1"
+            piplist: "python-dateutil~=2.5.0 scipy~=1.0.0 matplotlib~=3.1.0 h5py~=2.10.0 astropy>=1.0,<1.1 pandas~=0.18.0"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.6"
+            os: ubuntu-20.04
+            build-deps: "pip setuptools wheel cython"
+            numpy-version: ">=1.19.0,<1.20.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy pandas"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+          - python-version: "3.7"
+            os: ubuntu-22.04
+            build-deps: "pip~=20.0.0 setuptools~=44.1.0 wheel~=0.34.2 cython<3.0"
+            numpy-version: ">=1.15.1,<1.16.0"
+            piplist: "python-dateutil~=2.5.0 scipy>=1.0.0,<1.1.0 matplotlib~=3.1.0 h5py~=2.10.0 astropy>=2.0,<2.1  pandas~=0.23.0"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.7"
+            os: ubuntu-22.04
+            build-deps: "pip setuptools wheel cython"
+            numpy-version: ">=1.21.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy pandas"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+          - python-version: "3.8"
+            os: ubuntu-22.04
+            build-deps: "pip~=20.0.0 setuptools~=44.1.0 wheel~=0.34.2 cython<3.0"
+            numpy-version: "~=1.18.0"
+            piplist: "python-dateutil~=2.5.0 scipy~=1.1.0 matplotlib~=3.1.0 h5py~=2.10.0 astropy>=2.0,<2.1 pandas~=0.24.0"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.8"
+            os: ubuntu-22.04
+            build-deps: "pip setuptools wheel cython"
+            numpy-version: ">=1.21.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy pandas"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+          - python-version: "3.9"
+            os: ubuntu-22.04
+            build-deps: "pip~=20.0.0 setuptools~=44.1.0 wheel~=0.34.2 cython<3.0<3.0"
+            numpy-version: "~=1.18.0"
+            piplist: "python-dateutil~=2.5.0 scipy>=1.5.0,<1.6.0 matplotlib~=3.1.0 h5py~=2.10.0 astropy>=2.0,<2.1 pandas~=0.24.0"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.9"
+            os: ubuntu-22.04
+            build-deps: "pip setuptools wheel cython"
+            numpy-version: ">=1.21.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy pandas"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+          - python-version: "3.10"
+            os: ubuntu-22.04
+            build-deps: "pip~=20.0.0 setuptools~=44.1.0 wheel~=0.34.2 cython<3.0"
+            numpy-version: ">=1.21.0,<1.22.0"
+            piplist: "python-dateutil~=2.7.0 scipy>=1.7.2,<1.8.0 matplotlib~=3.1.0 h5py>=3.6,<3.7 astropy>=4.0,<4.1 pandas~=1.2.0"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.10"
+            os: ubuntu-22.04
+            build-deps: "pip setuptools wheel cython"
+            numpy-version: ">=1.26.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy pandas"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+          - python-version: "3.11"
+            os: ubuntu-22.04
+            build-deps: "pip~=20.0.0 setuptools~=44.1.0 wheel~=0.34.2 cython<3.0"
+            numpy-version: "~=1.23.0"
+            piplist: "python-dateutil~=2.8.1 scipy~=1.9.0 matplotlib~=3.1.0 h5py~=3.8.0 astropy~=5.0.0 pandas~=1.5.0"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.11"
+            os: ubuntu-22.04
+            build-deps: "pip setuptools wheel cython"
+            numpy-version: ">=1.26.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy pandas"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+          - python-version: "3.12"
+            os: ubuntu-22.04
+            build-deps: "pip~=23.1.0 setuptools~=66.1.0 wheel~=0.34.2 cython<3.0"
+            numpy-version: "~=1.24.0"
+            piplist: "python-dateutil~=2.8.1 scipy~=1.11.0 matplotlib~=3.5.0 h5py~=3.10.0 astropy~=5.3.0 pandas~=1.5.0"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.12"
+            os: ubuntu-22.04
+            build-deps: "pip setuptools wheel cython meson-python ninja versioneer"
+            numpy-version: "<1.26.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy pandas"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+    steps:
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Get Week
+      id: get-week
+      run: |
+        echo "week=$(/bin/date -u "+%G%V")" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Cache pip
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        # Force-expire the pip cache weekly
+        key: pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.dep-strategy }}
+        restore-keys: |
+          pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-${{ matrix.python-version }}-
+          pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-
+    - name: Cache cdf
+      uses: actions/cache@v3
+      with:
+        path: ~/cdf
+        # Force-expire the CDF cache weekly
+        key: cdf-v${{ env.cdf-cache-version}}-${{ matrix.cdf-version }}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}
+    - name: Install dependencies
+      env:
+        BUILD_DEPS: ${{ matrix.build-deps }}
+        NUMPY_VERSION: ${{ matrix.numpy-version }}
+        PIPLIST: ${{ matrix.piplist }}
+        CFLAGS: ${{ matrix.cflags }}
+        CDF_VER: ${{ matrix.cdf-munged-version }}
+        PYVER: ${{ matrix.python-version }}
+        DEPSTRAT: ${{ matrix.dep-strategy }}
+      run: |
+        sudo apt-get update -qq
+        # Needed for scipy versions without binary wheels
+        sudo apt-get install libhdf5-serial-dev gcc gfortran xvfb libblas-dev liblapack-dev
+        python -m pip install --no-build-isolation ${BUILD_DEPS}
+        pip install --no-build-isolation --force-reinstall "numpy${NUMPY_VERSION}"
+        # Make sure new packages don't override numpy version
+        if [ "$DEPSTRAT" = "oldest" -a \( ${PYVER} = "3.6" -o ${PYVER} = "3.7" -o ${PYVER} = "3.8" \) ]; then
+            # scipy < 1.5 doesn't build on gcc 10+ without this argument
+            FOPT="-fallow-argument-mismatch" pip install --no-build-isolation --log=install_log.txt numpy${NUMPY_VERSION} ${PIPLIST}
+        else
+            pip install --no-build-isolation numpy${NUMPY_VERSION} ${PIPLIST}
+        fi
+        pip freeze --all
+        if [ ! -d ${HOME}/cdf ]; then wget https://spdf.gsfc.nasa.gov/pub/software/cdf/dist/cdf${CDF_VER}/linux/cdf${CDF_VER}-dist-cdf.tar.gz; tar xzf cdf${CDF_VER}-dist-cdf.tar.gz; cd cdf${CDF_VER}-dist; make OS=linux ENV=gnu SHARED=yes CURSES=no FORTRAN=no all; make INSTALLDIR=$HOME/cdf/ install.lib install.definitions; rm -f ${HOME}/cdf/lib/libcdf.a; cd ..; fi
+# Per https://github.com/actions/checkout/issues/15, this gets the MERGE
+# commit of the PR, not just the tip of the PR.
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Install and run tests
+      working-directory: ${{ github.workspace }}
+      run: |
+        # Install (not in build)
+        # pip install . does not cache wheel
+        pip install --no-build-isolation --no-deps --log=install_log.txt .
+        echo "pip log:" && cat install_log.txt && echo "End pip log"
+        pushd tests; python -c "import spacepy; print(spacepy.__file__); import os.path; print(os.listdir(os.path.dirname(spacepy.__file__)))"; popd
+        ls build/* || true
+        cd tests; . ${HOME}/cdf/bin/definitions.B; xvfb-run python test_all.py -v
+
+  irbem-unicode:
+    name: Check for Unicode in IRBEM source
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Unicode check
+        run: (! file irbem-lib-*/*.f irbem-lib-*/source/*.f | grep -q Unicode )
+        working-directory: ${{ github.workspace }}/spacepy/irbempy/
+
+  docs:
+    name: Build docs
+    runs-on: ${{ matrix.os }}
+    needs: [test]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python-version: "3.6"
+            os: ubuntu-20.04
+            build-deps: "pip~=20.0.0 setuptools~=44.1.0 wheel~=0.34.2 cython"
+            numpy-version: "~=1.15.1"
+            piplist: "python-dateutil~=2.5.0 scipy~=1.0.0 matplotlib~=3.1.0 h5py~=2.10.0 astropy>=1.0,<1.1 sphinx~=1.8.0 numpydoc"
+            cflags: "-Wno-error=format-security"
+            cdf-version: "3.5.1"
+            cdf-munged-version: "35_1"
+            dep-strategy: "oldest"
+          - python-version: "3.12"
+            os: ubuntu-22.04
+            build-deps: "pip setuptools wheel cython"
+            numpy-version: "<1.26.0"
+            piplist: "python-dateutil scipy matplotlib h5py astropy sphinx numpydoc"
+            cflags: ""
+            cdf-version: "3.9.1"
+            cdf-munged-version: "39_1"
+            dep-strategy: "newest"
+    steps:
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Get Week
+      id: get-week
+      run: |
+        echo "week=$(/bin/date -u "+%G%V")" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Cache pip
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        # Different pip cache for docs (includes numpydoc, sphinx)
+        key: docs-pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.dep-strategy }}
+        restore-keys: |
+          docs-pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-${{ matrix.python-version }}-
+          docs-pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-
+          pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.dep-strategy }}
+          pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-${{ matrix.python-version }}-
+          pip-v${{ env.pip-cache-version}}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}-
+    - name: Cache cdf
+      uses: actions/cache@v3
+      with:
+        path: ~/cdf
+        # Force-expire the CDF cache weekly
+        key: cdf-v${{ env.cdf-cache-version}}-${{ matrix.cdf-version }}-${{ steps.get-week.outputs.week }}-${{ matrix.os }}
+    - name: Install dependencies
+      env:
+        BUILD_DEPS: ${{ matrix.build-deps }}
+        NUMPY_VERSION: ${{ matrix.numpy-version }}
+        PIPLIST: ${{ matrix.piplist }}
+        CFLAGS: ${{ matrix.cflags }}
+        CDF_VER: ${{ matrix.cdf-munged-version }}
+        PYVER: ${{ matrix.python-version }}
+        DEPSTRAT: ${{ matrix.dep-strategy }}
+      run: |
+        sudo apt-get update -qq
+        # Needed for scipy versions without binary wheels
+        sudo apt-get install libhdf5-serial-dev gcc gfortran xvfb libblas-dev liblapack-dev
+        python -m pip install --no-build-isolation ${BUILD_DEPS}
+        pip install --no-build-isolation --force-reinstall "numpy${NUMPY_VERSION}"
+        # Make sure new packages don't override numpy version
+        if [ "$DEPSTRAT" = "oldest" -a \( ${PYVER} = "3.6" -o ${PYVER} = "3.7" -o ${PYVER} = "3.8" \) ]; then
+            # scipy < 1.5 doesn't build on gcc 10+ without this argument
+            FOPT="-fallow-argument-mismatch" pip install --no-build-isolation numpy${NUMPY_VERSION} ${PIPLIST}
+        else
+            pip install --no-build-isolation numpy${NUMPY_VERSION} ${PIPLIST}
+        fi
+        pip freeze --all
+        if [ ! -d ${HOME}/cdf ]; then wget https://spdf.gsfc.nasa.gov/pub/software/cdf/dist/cdf${CDF_VER}/linux/cdf${CDF_VER}-dist-cdf.tar.gz; tar xzf cdf${CDF_VER}-dist-cdf.tar.gz; cd cdf${CDF_VER}-dist; make OS=linux ENV=gnu SHARED=yes CURSES=no FORTRAN=no all; make INSTALLDIR=$HOME/cdf/ install.lib install.definitions; rm -f ${HOME}/cdf/lib/libcdf.a; cd ..; fi
+# Per https://github.com/actions/checkout/issues/15, this gets the MERGE
+# commit of the PR, not just the tip of the PR.
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Build spacepy and docs
+      working-directory: ${{ github.workspace }}
+      run: |
+        pip install --no-build-isolation --no-deps .
+        cd Doc
+        . ${HOME}/cdf/bin/definitions.B
+        make html | tee doc_log.txt
+        (! tail -n 20 doc_log.txt | grep -E -q 'build succeeded, [0-9]+ warnings' )
+      shell: bash
+
+# See https://github.community/t/status-check-for-a-matrix-jobs/127354/7
+  all-tests:
+    name: All tests
+    if: ${{ always() }}
+    runs-on: ubuntu-22.04
+    needs: [test, irbem-unicode, docs]
+    steps:
+      - name: Check test matrix status
+        if: ${{ needs.test.result != 'success' }}
+        run: exit 1
+      - name: Check IRBEM unicode status
+        if: ${{ needs.irbem-unicode.result != 'success' }}
+        run: exit 1
+      - name: Check documentation build status
+        if: ${{ needs.docs.result != 'success' }}
+        run: exit 1

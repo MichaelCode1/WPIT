@@ -1,0 +1,99 @@
+cff-version: 1.2.0
+title: SpacePy
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file. Please also cite the papers
+  by Morley et al. (2011; https://conference.scipy.org/proceedings/scipy2010/morley.html)
+  and Niehof et al. (2022; https://doi.org/10.3389/fspas.2022.1023612)
+  and other relevant papers as described in the documentation
+  of the features used.
+type: software
+url: https://spacepy.github.io
+authors:
+  - given-names: Steven K.
+    family-names: Morley
+    affiliation: Los Alamos National Laboratory
+    orcid: 'https://orcid.org/0000-0001-8520-0199'
+  - given-names: Jonathan T.
+    family-names: Niehof
+    affiliation: University of New Hampshire
+    orcid: 'https://orcid.org/0000-0001-6286-5809'
+  - given-names: Daniel T.
+    family-names: Welling
+    affiliation: University of Michigan
+    orcid: 'https://orcid.org/0000-0002-0590-1022'
+  - given-names: Brian A.
+    family-names: Larsen
+    affiliation: Los Alamos National Laboratory
+    orcid: 'https://orcid.org/0000-0003-4515-0208'
+  - given-names: Antoine
+    family-names: Brunet
+  - given-names: Miles A.
+    family-names: Engel
+    affiliation: Los Alamos National Laboratory
+    orcid: 'https://orcid.org/0000-0003-4248-9636'
+  - given-names: Jan
+    family-names: Gieseler
+    orcid: 'https://orcid.org/0000-0003-1848-7067'
+  - given-names: John
+    family-names: Haiducek
+    orcid: 'https://orcid.org/0000-0002-4027-8475'
+  - given-names: Michael
+    family-names: Henderson
+    orcid: 'https://orcid.org/0000-0003-4975-9029'
+  - given-names: Aaron
+    family-names: Hendry
+  - given-names: Michael
+    family-names: Hirsch
+  - given-names: Peter
+    family-names: Killick
+  - given-names: Josef
+    family-names: Koller
+  - given-names: Asher
+    family-names: Merrill
+  - given-names: Lutz
+    family-names: Rastatter
+  - given-names: Ashton
+    family-names: Reimer
+  - given-names: Albert Y.
+    family-names: Shih
+  - given-names: Amanda
+    family-names: Stricklan
+references:
+  - type: conference-paper
+    scope: Cite this paper as a general reference for the package and its history.
+    year: 2011
+    title: "Spacepy - a python-based library of tools for the space sciences"
+    collection-title: "Proceedings of the 9th Python in science conference (SciPy 2010)"
+    authors:
+      - family-names: Morley
+        given-names: Steven K.
+      - family-names: Koller
+        given-names: Josef
+      - family-names: Welling
+        given-names: Daniel T.
+      - family-names: Larsen
+        given-names: Brian A.
+      - family-names: Henderson
+        given-names: Michael G.
+      - family-names: Niehof
+        given-names: Jonathan T.
+    start: 67
+    end: 72
+    doi: 10.25080/Majora-92bf1922-012
+  - type: article
+    scope: Cite this paper as a general reference, for package scope and specific details of datamodel and coordinates.
+    authors:
+      - family-names: Niehof
+        given-names: Jonathan T.
+      - family-names: Morley
+        given-names: Steven K.
+      - family-names: Welling
+        given-names: Daniel T.
+      - family-names: Larsen
+        given-names: Brian A.
+    title: "The SpacePy space science package at 12 years"
+    year: 2022
+    journal: Frontiers in Astronomy and Space Sciences
+    volume: 9
+    doi: 10.3389/fspas.2022.1023612
