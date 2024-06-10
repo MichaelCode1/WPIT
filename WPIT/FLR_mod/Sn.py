@@ -25,7 +25,7 @@ ________________________________________________________________________________
 
 import numpy as np
 from WPIT.Environment_mod import const
-from WPIT.FLR_mod as flr
+import WPIT.FLR_mod as flr
 
 def Sn(L, s, Bm, a):
     
