@@ -13,7 +13,7 @@ t: time in seconds
 f0: natural frequency of field line (Hz)
 Bm: wave maximum amplitude at ionoshphere (Tesla)
 phi: polar angle with relation to x-axis
-m: wave number
+m: azimuthal wave number
 _______________________________________________________________________________________________________________________
 **Outputs**:
 
