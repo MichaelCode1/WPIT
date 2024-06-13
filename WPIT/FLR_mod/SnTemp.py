@@ -26,9 +26,10 @@ import numpy as np
 from WPIT.Environment_mod import const
 import WPIT.FLR_mod as flr
 
-def SnTemp(L, s, A):
-    
+def SnTemp(L, s):
+
     sm = flr.s0(L)
     fN = flr.fN(L)
+    A = L**2*const.Re**2/(sm+sm**3)**(1/2)
     
     return A*np.sin(fN*(s+s**3))
