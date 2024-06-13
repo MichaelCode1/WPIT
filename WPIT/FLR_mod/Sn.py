@@ -26,12 +26,13 @@ import numpy as np
 from WPIT.Environment_mod import const
 import WPIT.FLR_mod as flr
 
-def Sn(L, s, Bm, a):
+def Sn(L, s, Bm):
     
     Bm=50.0e-9
     sm = flr.sm(L)
     fN = flr.fN(L)
     
     scale = Bm*(sm+sm**3)**(1/2)*(1-sm**2)**(3/2)/(1+3*sm**2)**(1/2)
+    A = L**2*const.Re**2/(sm+sm**3)**(1/2)
     
-    return scale*a*np.sin(fN*(s+s**3))
+    return scale*A*np.sin(fN*(s+s**3))
